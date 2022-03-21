@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Category;
+use App\Tag;
 use App\Post;
 
 use App\Http\Controllers\Controller;
@@ -17,7 +18,8 @@ class PostController extends Controller
     protected $validation = [
         'title' => 'required|max:255',
         'content' => 'required',
-        'category_id' => 'nullable|exist:categories,id'
+        'category_id' => 'nullable|exist:categories,id',
+        'tag'=>'required'
     ];
     /**
      * Display a listing of the resource.
@@ -40,8 +42,9 @@ class PostController extends Controller
     {   
         //passiamo i dati della tabella category sul nostro create
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.create',  compact('post', 'categories'));
+        return view('admin.posts.create',  compact('post', 'categories','tags'));
     }
 
     /**
@@ -55,24 +58,22 @@ class PostController extends Controller
         $request->validate([
             "title"=>"required|string|max:50",
             "author"=>"required|string|max:50",
-            "content"=>"required|string|max:4000"
+            "content"=>"required|string|max:4000",
+            'tag'=>'required'
         ]);
 
         $form_data = $request->all();
 
         $slugTmp = Str::slug($form_data['title']);
-
         $count = 1;
-        
         while(Post::where('slug',$slugTmp)->first()){
             $slugTmp = Str::slug($form_data['title']).'-'.$count;
             $count ++;
         }
-
         $form_data['slug'] = $slugTmp;
-
         $newPost = new Post();
 
+        $newPost->tags()->sync($form_data['tags']);
         $newPost->fill($form_data);
         $newPost->save();
 

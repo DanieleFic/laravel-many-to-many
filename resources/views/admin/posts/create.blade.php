@@ -10,7 +10,7 @@
     di laravel--}}
     
 <div class="container">
-    <h1>MODIFICA POST</h1>
+    <h1>CREA POST</h1>
     <a href="{{route("admin.posts.index")}}"><button type="button" class="btn btn-info">Indietro</button></a>
     <div class="row">
         <div class="col-md-12">
@@ -49,6 +49,16 @@
                     @endforeach
                     </select>
                 </div>
+                @foreach ($tags as $tag)
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" value="{{$tag->id}}" 
+                    name="tags[]" id="{{$tag->slug}}">
+                    <label class="form-check-label" for="{{$tag->slug}}">
+                        {{$tag->name}}
+                    </label>
+                </div>
+                @endforeach
+                
                 <div class="form-group">
                     <input type="submit" name="Submit" value="Publish" class="ms_button btn btn-primary form-control" />
                 </div>

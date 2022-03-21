@@ -4,7 +4,7 @@ use App\Tag;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
 
-class TagSeeder extends Seeder
+class TagsTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
