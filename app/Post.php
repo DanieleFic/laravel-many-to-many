@@ -10,6 +10,8 @@ class Post extends Model
     protected $fillable = ['title','author','content','slug','category_id'];
 
     public function category(){
+
         return $this->belongsTo('App\Category');
+        return $this->belongsToMany('App\Tag');
     }
 }
