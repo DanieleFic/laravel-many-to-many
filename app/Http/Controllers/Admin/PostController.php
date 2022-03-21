@@ -6,8 +6,9 @@ use App\Category;
 use App\Tag;
 use App\Post;
 
+
 use App\Http\Controllers\Controller;
-use GuzzleHttp\Promise\Create;
+/* use GuzzleHttp\Promise\Create; */
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Str;
@@ -17,9 +18,10 @@ class PostController extends Controller
 {   
     protected $validation = [
         'title' => 'required|max:255',
+        "author"=>"required|string|max:50",
         'content' => 'required',
-        'category_id' => 'nullable|exist:categories,id',
-        'tag'=>'required'
+        'category_id' => 'nullable|exists:categories,id',
+        'tags'=>'required'
     ];
     /**
      * Display a listing of the resource.
@@ -55,14 +57,18 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {   
-        $request->validate([
+        /* $request->validate([
             "title"=>"required|string|max:50",
             "author"=>"required|string|max:50",
             "content"=>"required|string|max:4000",
             'tag'=>'required'
-        ]);
+        ]); */
+        /* var_dump($this->validation); */
+        $request->validate($this->validation);
 
+        
         $form_data = $request->all();
+        /* dd($form_data); */
 
         $slugTmp = Str::slug($form_data['title']);
         $count = 1;
@@ -71,11 +77,14 @@ class PostController extends Controller
             $count ++;
         }
         $form_data['slug'] = $slugTmp;
+
         $newPost = new Post();
 
-        $newPost->tags()->sync($form_data['tags']);
+        
+
         $newPost->fill($form_data);
         $newPost->save();
+        $newPost->tags()->sync($form_data['tags']);
 
         return redirect()->route('admin.posts.show', $newPost->id);
     }
@@ -102,8 +111,9 @@ class PostController extends Controller
     {   
         //passiamo i dati della tabella category sul nostro create
         $categories = Category::all();
+        $tags = Tag::all();
 
-        return view('admin.posts.edit', compact('post', 'categories'));
+        return view('admin.posts.edit', compact('post', 'categories','tags'));
     }
 
     /**
@@ -115,11 +125,12 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        $request->validate([
+        /* $request->validate([
             "title"=>"required|string|max:50",
             "author"=>"required|string|max:50",
-            "content"=>"required|string|max:4000"
-        ]); 
+            "content"=>"required|string|max:4000",
+            'tag'=>'required'
+        ]); */
 
         $form_data = $request->all();
 
@@ -139,6 +150,8 @@ class PostController extends Controller
             $form_data['slug'] = $slug;
 
             $post->update($form_data);
+
+            $post->tags()->sync(isset($form_data['tags']) ? $form_data['tags'] : []);
 
         return redirect()->route('admin.posts.show', $post->id);
     }

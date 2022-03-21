@@ -26,7 +26,12 @@
             <div class="col col-5">{{$element->content}}</div>
             <div class="col col-1">{{$element->slug}}</div>
             <div class="col col-1">{{$element->category ? $element->category->name : '-'}}</div>
-            <div class="col col-1">{{$element->tag ? $element->tag->name : '-'}}</div>
+            
+            <div class="col col-1">
+                @foreach($element->tags as $tag)
+                <h6><span class="badge badge-secondary">{{$tag->name ? $tag->name : '-'}}</span></h6>
+                @endforeach
+            </div>
             <div class="col col-1 ms_flex">
                 <a href="{{route("admin.posts.show", $element->id)}}"><button type="button" class="btn btn_info"><i class="bi bi-info"></i></button></a>
                 <a href="{{route("admin.posts.edit", $element->id)}}"><button type="button" class="btn  btn_edit"><i class="bi bi-pencil-square"></i></button></a>

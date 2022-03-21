@@ -55,6 +55,15 @@
                         </option>
                     @endforeach
                     </select>
+                    @foreach ($tags as $tag)
+                        <div class="form-check">
+                        <input class="form-check-input" type="checkbox" value="{{$tag->id}}" 
+                        name="tags[]" id="{{$tag->slug}}">
+                        <label class="form-check-label" for="{{$tag->slug}}">
+                            {{$tag->name}}
+                        </label>
+                </div>
+                @endforeach
                 </div>
                 <div class="form-group">
                     <input type="submit" name="Submit" value="Crea" class="ms_button btn btn-primary form-control" />
